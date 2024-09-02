@@ -1,13 +1,16 @@
 # ベースイメージとしてNode.jsのslimバージョンを使用
 FROM node:20-slim AS base
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+ENV COREPACK_HOME=/okashibu/.cache/node/corepack
 WORKDIR /app
-
+RUN corepack enable
 # 依存関係のインストールステージ
 FROM base AS deps
 # インストール
 RUN apt-get update -y && apt-get install -y openssl
-COPY package.json package-lock.json* ./
-RUN npm ci --prod --frozen-lockfile
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm i --prod --frozen-lockfile
 COPY prisma ./
 RUN npx prisma generate
 
@@ -15,8 +18,8 @@ RUN npx prisma generate
 FROM base AS builder
 # ビルド
 COPY . .
-RUN npm i --frozen-lockfile
-RUN npm run build
+RUN pnpm i --frozen-lockfile
+RUN pnpm build
 
 FROM gcr.io/distroless/nodejs20-debian11 AS runner
 ENV NODE_ENV=production
