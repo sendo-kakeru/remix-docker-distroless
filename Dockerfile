@@ -5,8 +5,11 @@ WORKDIR /app
 # 依存関係のインストールステージ
 FROM base AS deps
 # インストール
+RUN apt-get update -y && apt-get install -y openssl
 COPY package.json package-lock.json* ./
 RUN npm ci --prod --frozen-lockfile
+COPY prisma ./
+RUN npx prisma generate
 
 # ビルドステージ
 FROM base AS builder
@@ -25,8 +28,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/build/ ./build
 COPY --from=deps /app/node_modules ./node_modules
 
-# USER nonroot:nonroot
-
 EXPOSE 8080
 ENV PORT=8080
+ENV DATABASE_URL='postgresql://dev:dev@host.docker.internal:5434/dev?schema-public'
 CMD ["./node_modules/@remix-run/serve/dist/cli", "./build/server/index.js"]
