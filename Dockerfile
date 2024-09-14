@@ -33,7 +33,4 @@ COPY --from=deps /app/node_modules ./node_modules
 
 EXPOSE 8080
 ENV PORT=8080
-# ENV DATABASE_URL="postgresql://develop_owner:S2uKWCNFR3th@ep-rough-unit-a1k2919p-pooler.ap-southeast-1.aws.neon.tech/develop?sslmode=require"
-# ENV DATABASE_URL=${DATABASE_URL}
-# ENV DIRECT_URL=${DIRECT_URL}
 CMD ["./node_modules/@remix-run/serve/dist/cli", "./build/server/index.js"]
