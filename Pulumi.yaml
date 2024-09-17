@@ -1,4 +1,4 @@
-name: pulumi-gcp-remix
+name: index-gcp-remix
 runtime:
   name: nodejs
   options:
@@ -8,4 +8,4 @@ config:
   pulumi:tags:
     value:
       pulumi:template: gcp-typescript
-main: pulumi.ts
+main: index.ts
