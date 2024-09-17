@@ -96,6 +96,7 @@ const repo_trigger = new gcp.cloudbuild.Trigger("repo-trigger", {
   filename: "cloudbuild.yaml",
 });
 
+
 // Define Cloud Run service
 const cloudRunService = new gcp.cloudrun.Service("cloudRunService", {
   location: "asia-northeast1",
