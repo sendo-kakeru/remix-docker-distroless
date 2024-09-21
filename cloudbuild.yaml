@@ -35,6 +35,21 @@ steps:
     secretEnv: [
       'DATABASE_URL',
     ]
+  - name: "gcr.io/google-appengine/exec-wrapper"
+    entrypoint: "bash"
+    args: [
+      "-c",
+      "/buildstep/execute.sh
+      -i $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      -e DATABASE_URL=$$DATABASE_URL
+      -s $_CLOUDSQL_INSTANCE_FULL_NAME
+      -- npx prisma migrate deploy"
+    ]
+      # - "-c"
+      # - "/buildstep/execute.sh -i Prismaが使えるコンテナイメージ -e DATABASE_URL=$$DATABASE_URL -s $_CLOUDSQL_INSTANCE_FULL_NAME -- yarn prisma migrate deploy"
+    secretEnv: ["DATABASE_URL"]
+    dir: "google-cloud-prisma-migrate"
+    id: "apply-migrations"
 images:
   - >-
     $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
