@@ -33,7 +33,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const createdTodo = await prisma.todo.create({
     data: { title: formData.get("title") as string },
   });
-  console.log("createdTodo", createdTodo);
+  // console.log("createdTodo", createdTodo);
   return redirect(".");
 }
 
