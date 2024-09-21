@@ -16,6 +16,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+
 console.log("DATABASE_URL", process.env.DATABASE_URL);
 neonConfig.webSocketConstructor = ws;
 const connectionString = process.env.DATABASE_URL;
