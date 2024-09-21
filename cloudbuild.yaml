@@ -23,7 +23,7 @@ steps:
       'gcloud run deploy "$_SERVICE_NAME"
       --platform=managed
       --image="$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA"
-      --labels="managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID"
+      --labels="managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID"
       --region="$_DEPLOY_REGION"
       --set-env-vars DATABASE_URL=$$DATABASE_URL
       --quiet
@@ -66,6 +66,7 @@ substitutions:
   _DEPLOY_REGION: asia-northeast1
   _AR_HOSTNAME: asia-northeast1-docker.pkg.dev
   _PLATFORM: managed
+  _TRIGGER_ID: d597c42d-7d13-4ca7-a0ee-4b0adb0e3511
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
