@@ -18,7 +18,7 @@ steps:
     id: Push
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
-      - run
+      - run --env DATABASE_URL=$$DATABASE_URL
       - services
       - update
       - $_SERVICE_NAME
@@ -28,8 +28,8 @@ steps:
       - >-
         --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
       - "--region=$_DEPLOY_REGION"
-      - "--update-env-vars"
-      - "DATABASE_URL=$$DATABASE_URL"
+      # - "--update-env-vars"
+      # - "DATABASE_URL="
       - "--quiet"
     id: Deploy
     entrypoint: gcloud
