@@ -17,25 +17,21 @@ steps:
         $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
     id: Push
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    entrypoint: bash
     args:
-      - run
-      - services
-      - update
-      - $_SERVICE_NAME
-      - "--platform=managed"
-      - >-
-        --image=$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-      - >-
-        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
-      - "--region=$_DEPLOY_REGION"
-      - "--set-secrets"
-      - "DATABASE_URL=projects/$PROJECT_ID/secrets/database-url/versions/latest"
-      # - "--update-env-vars"
-      # - "DATABASE_URL=$$DATABASE_URL"
-      - "--quiet"
+      - "-c"
+      - |
+        gcloud run services update "$_SERVICE_NAME" \
+          --platform=managed \
+          --image="$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA" \
+          --labels="managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID" \
+          --region="$_DEPLOY_REGION" \
+          --set-env-vars="DATABASE_URL=$$DATABASE_URL" \
+          --quiet
     id: Deploy
-    entrypoint: gcloud
-    secretEnv: ["DATABASE_URL"]
+    secretEnv: [
+      'DATABASE_URL',
+    ]
 images:
   - >-
     $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
